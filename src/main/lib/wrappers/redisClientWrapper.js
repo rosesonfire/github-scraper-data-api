@@ -1,4 +1,4 @@
-import { createDefensivePromise } from './../../utils'
+import { createDefensivePromise } from 'js-utils'
 
 // Wrapper for the npm package 'redis'
 // Replaces the redis client default functions with promise oriented functions
