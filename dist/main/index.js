@@ -1,0 +1,12 @@
+'use strict';
+
+var _ioc = require('./../ioc');
+
+_ioc.dependencies.app.then(function (app) {
+  return app.listen();
+})
+// eslint-disable-next-line no-console
+.catch(function (err) {
+  return console.error(err);
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9tYWluL2luZGV4LmpzIl0sIm5hbWVzIjpbImFwcCIsInRoZW4iLCJsaXN0ZW4iLCJjYXRjaCIsImNvbnNvbGUiLCJlcnJvciIsImVyciJdLCJtYXBwaW5ncyI6Ijs7QUFBQTs7QUFFQSxrQkFBYUEsR0FBYixDQUNHQyxJQURILENBQ1E7QUFBQSxTQUFPRCxJQUFJRSxNQUFKLEVBQVA7QUFBQSxDQURSO0FBRUU7QUFGRixDQUdHQyxLQUhILENBR1M7QUFBQSxTQUFPQyxRQUFRQyxLQUFSLENBQWNDLEdBQWQsQ0FBUDtBQUFBLENBSFQiLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBkZXBlbmRlbmNpZXMgfSBmcm9tICcuLy4uL2lvYydcblxuZGVwZW5kZW5jaWVzLmFwcFxuICAudGhlbihhcHAgPT4gYXBwLmxpc3RlbigpKVxuICAvLyBlc2xpbnQtZGlzYWJsZS1uZXh0LWxpbmUgbm8tY29uc29sZVxuICAuY2F0Y2goZXJyID0+IGNvbnNvbGUuZXJyb3IoZXJyKSlcbiJdfQ==

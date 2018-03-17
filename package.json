@@ -1,0 +1,74 @@
+{
+  "name": "scraper-data-api",
+  "version": "0.0.1",
+  "description": "Persists, serves and clears scraped data",
+  "main": "index.js",
+  "config": {
+    "src_dir": "src",
+    "prod_dir": "dist",
+    "main_dir": "dist/main",
+    "coverage_dir": "coverage",
+    "coverage": "coverage/index.html",
+    "src_js_files": "src/**/*.js",
+    "prod_main_js_files": "dist/main/**/*.js",
+    "prod_main_index_file": "dist/main/index.js",
+    "test_files": "dist/test/**/*.spec.js"
+  },
+  "scripts": {
+    "clean": "rm -rf $npm_package_config_prod_dir && mkdir $npm_package_config_prod_dir",
+    "build": "babel $npm_package_config_src_dir -d $npm_package_config_prod_dir --copy-files",
+    "build-with-watcher": "babel $npm_package_config_src_dir --watch -d $npm_package_config_prod_dir --copy-files",
+    "clean-build": "npm run clean && npm run build",
+    "start-scraper-data-api": "node $npm_package_config_main_dir",
+    "start-scraper-data-api-with-watcher": "nodemon --watch $npm_package_config_main_dir $npm_package_config_main_dir",
+    "start-with-watchers": "npm run clean-build && npm run start-scraper-data-api-with-watcher & npm run build-with-watcher",
+    "start": "npm run start-scraper-data-api",
+    "eslint-test": "eslint --parser babel-eslint \"$npm_package_config_src_js_files\"",
+    "eslint-fix": "eslint --parser babel-eslint --fix \"$npm_package_config_src_js_files\"",
+    "test-scraper-data-api": "npm run clean-build && nyc --reporter=html --report-dir=$npm_package_config_coverage_dir --all --include=$npm_package_config_prod_main_js_files --exclude=$npm_package_config_prod_main_index_file mocha \"$npm_package_config_test_files\"",
+    "show-coverage": "sensible-browser $npm_package_config_coverage",
+    "test": "npm run eslint-test && npm run test-scraper-data-api",
+    "test-and-show-coverage": "npm test && npm run show-coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rosesonfire/github2.git"
+  },
+  "keywords": [
+    "scraper",
+    "github",
+    "nodejs",
+    "expressjs",
+    "redis",
+    "docker"
+  ],
+  "author": "rosesonfire",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rosesonfire/github2/issues"
+  },
+  "homepage": "https://github.com/rosesonfire/github2#readme",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "electrolyte": "^0.5.0",
+    "express": "^4.16.2",
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "chai": "^4.1.2",
+    "chai-arrays": "^2.0.0",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^4.18.1",
+    "eslint-config-standard-react": "^6.0.0",
+    "mocha": "^5.0.4",
+    "nodemon": "^1.17.1",
+    "nyc": "^11.4.1",
+    "sinon": "^4.4.2",
+    "standard": "^11.0.0"
+  }
+}
