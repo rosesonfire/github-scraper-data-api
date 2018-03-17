@@ -1,4 +1,5 @@
 import redis from 'redis'
+import { utils } from 'js-utils'
 
 import { createNewInstance } from './../../iocHelper'
 import redisClientWrapper from './../../../main/lib/wrappers/redisClientWrapper'
@@ -11,6 +12,7 @@ exports = module.exports = createNewInstance({
     port: config.db.port
   },
   dependencyInstances: {
-    redis: redis
+    redis: redis,
+    utils
   }
 })

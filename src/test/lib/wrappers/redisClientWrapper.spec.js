@@ -5,11 +5,13 @@ import redisClientWrapper from './../../../main/lib/wrappers/redisClientWrapper'
 import redisMock from './../../mocks/others/redis'
 import { redisClientMock, redisClientStub }
   from './../../mocks/others/redisClient'
+import { utilsStub } from './../../mocks/others/jsUtils'
 
 describe('RedisWrapper', () => {
   let
     mocks,
     redis,
+    utils,
     redisClient,
     host,
     port,
@@ -27,6 +29,8 @@ describe('RedisWrapper', () => {
 
   beforeEach(() => {
     redis = redisMock()
+    utils = utilsStub()
+    utils.createDefensivePromise.callsFake(f => new Promise(f))
   })
 
   afterEach(() => mocks.forEach(mock => mock.verify()))
@@ -40,7 +44,7 @@ describe('RedisWrapper', () => {
     })
 
     it('should have expected properties', () =>
-      redisClientWrapper({ redis, host, port }).should.have.all
+      redisClientWrapper({ redis, host, port, utils }).should.have.all
         .keys(...expectedProperties))
 
     describe('When calling hmset in redisWrapper', () => {
@@ -49,11 +53,11 @@ describe('RedisWrapper', () => {
           .callsFake((...args) => args[args.length - 1](null, positiveReply)))
 
         it('should return a promise', () =>
-          redisClientWrapper({ redis, host, port }).hmset(...hmsetArgs)
+          redisClientWrapper({ redis, host, port, utils }).hmset(...hmsetArgs)
             .should.be.a('promise'))
 
         it('should return positive response', () =>
-          redisClientWrapper({ redis, host, port }).hmset(...hmsetArgs)
+          redisClientWrapper({ redis, host, port, utils }).hmset(...hmsetArgs)
             .should.eventually.equal(positiveReply))
       })
 
@@ -62,7 +66,7 @@ describe('RedisWrapper', () => {
           .callsFake((...args) => args[args.length - 1](new Error('er'), null)))
 
         it('should fail', () =>
-          redisClientWrapper({ redis, host, port }).hmset(...hmsetArgs)
+          redisClientWrapper({ redis, host, port, utils }).hmset(...hmsetArgs)
             .should.eventually.be.rejected)
       })
 
@@ -71,7 +75,7 @@ describe('RedisWrapper', () => {
           .callsFake((...args) => { throw new Error('er') }))
 
         it('should fail', () =>
-          redisClientWrapper({ redis, host, port }).hmset(...hmsetArgs)
+          redisClientWrapper({ redis, host, port, utils }).hmset(...hmsetArgs)
             .should.eventually.be.rejected)
       })
     })
@@ -88,7 +92,7 @@ describe('RedisWrapper', () => {
 
     it('should be called with proper arguments',
       () => {
-        redisClientWrapper({ redis, host, port }).hmset(...hmsetArgs)
+        redisClientWrapper({ redis, host, port, utils }).hmset(...hmsetArgs)
         '1'.should.equal('1')
       })
   })
@@ -104,7 +108,7 @@ describe('RedisWrapper', () => {
 
     it('should quit',
       () => {
-        redisClientWrapper({ redis, host, port }).quit()
+        redisClientWrapper({ redis, host, port, utils }).quit()
         '1'.should.equal('1')
       })
   })
