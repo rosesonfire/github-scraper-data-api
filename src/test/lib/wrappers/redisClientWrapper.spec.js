@@ -17,13 +17,15 @@ describe('RedisClientWrapper', () => {
     port,
     expectedProperties,
     hmsetArgs,
+    hgetAllArg,
     positiveReply
 
   before(() => {
     host = 'localhost'
     port = 1234
-    expectedProperties = ['hmset', 'quit']
+    expectedProperties = ['hmset', 'hgetall', 'quit']
     hmsetArgs = [1, 'id', 1, 'value', '1']
+    hgetAllArg = 1
     positiveReply = 'OK'
   })
 
@@ -79,22 +81,73 @@ describe('RedisClientWrapper', () => {
             .should.eventually.be.rejected)
       })
     })
+
+    describe('When calling hgetall in redisClientWrapper', () => {
+      describe('When successful', () => {
+        beforeEach(() => redisClient.hgetall.onFirstCall()
+          .callsFake((...args) => args[args.length - 1](null, positiveReply)))
+
+        it('should return a promise', () =>
+          redisClientWrapper({ redis, host, port, utils }).hgetall(hgetAllArg)
+            .should.be.a('promise'))
+
+        it('should return positive response', () =>
+          redisClientWrapper({ redis, host, port, utils }).hgetall(hgetAllArg)
+            .should.eventually.equal(positiveReply))
+      })
+
+      describe('When core redis client returns error', () => {
+        beforeEach(() => redisClient.hgetall
+          .callsFake((...args) => args[args.length - 1](new Error('er'), null)))
+
+        it('should fail', () =>
+          redisClientWrapper({ redis, host, port, utils }).hgetall(hgetAllArg)
+            .should.eventually.be.rejected)
+      })
+
+      describe('When core redis client fails', () => {
+        beforeEach(() => redisClient.hgetall
+          .callsFake((...args) => { throw new Error('er') }))
+
+        it('should fail', () =>
+          redisClientWrapper({ redis, host, port, utils }).hgetall(hgetAllArg)
+            .should.eventually.be.rejected)
+      })
+    })
   })
 
-  describe('When calling hmset in redisClientWrapper', () => {
+  describe('When calling operations in redisClientWrapper', () => {
     beforeEach(() => {
       redisClient = redisClientMock()
-      mocks = [ redis.createClient, redisClient.hmset ]
       redis.createClient.once().withExactArgs({ host, port })
         .returns(redisClient)
-      redisClient.hmset.once().withArgs(...hmsetArgs)
     })
 
-    it('should be called with proper arguments',
-      () => {
-        redisClientWrapper({ redis, host, port, utils }).hmset(...hmsetArgs)
-        '1'.should.equal('1')
+    describe('When calling hmset', () => {
+      beforeEach(() => {
+        mocks = [ redis.createClient, redisClient.hmset ]
+        redisClient.hmset.once().withArgs(...hmsetArgs)
       })
+
+      it('should be called with proper arguments',
+        () => {
+          redisClientWrapper({ redis, host, port, utils }).hmset(...hmsetArgs)
+          '1'.should.equal('1')
+        })
+    })
+
+    describe('When calling hgetall', () => {
+      beforeEach(() => {
+        mocks = [ redis.createClient, redisClient.hgetall ]
+        redisClient.hgetall.once().withArgs(hgetAllArg)
+      })
+
+      it('should be called with proper arguments',
+        () => {
+          redisClientWrapper({ redis, host, port, utils }).hgetall(hgetAllArg)
+          '1'.should.equal('1')
+        })
+    })
   })
 
   describe('When calling quit in redisClientWrapper', () => {

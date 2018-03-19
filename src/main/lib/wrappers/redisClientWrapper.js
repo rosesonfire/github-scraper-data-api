@@ -16,6 +16,7 @@ export default ({ redis, host, port, utils }) => {
 
   return {
     hmset: _makeQuery('hmset'),
+    hgetall: _makeQuery('hgetall'),
     quit: async () => client.quit()
   }
 }
