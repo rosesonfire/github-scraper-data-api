@@ -18,7 +18,7 @@ describe('RedisODM', () => {
     positiveReply
 
   before(() => {
-    expectedODMProperties = ['create']
+    expectedODMProperties = ['create', 'get']
     expectedModelObjProperties = ['key', 'data', 'save']
     data = {
       id: 126,
@@ -91,7 +91,7 @@ describe('RedisODM', () => {
           e.message.should
             .equal('Occurence of ":" in string value is not supported')
         }
-  })
+      })
     })
 
     describe('When creating a model object with array as a value', () => {
@@ -106,6 +106,29 @@ describe('RedisODM', () => {
         }
       })
     })
+  })
+
+  describe('When getting a model object', () => {
+    beforeEach(() => {
+      redisClient.hgetall.once().withExactArgs(data.id).resolves(flattenedData)
+      mocks = [ redisClient.hgetall ]
+    })
+
+    it('should return a promise', () =>
+      redisODM({ redisClient }).get(data.id).should.be.a('promise'))
+
+    it('should have expected properties', () =>
+      redisODM({ redisClient }).get(data.id)
+        .should.eventually.have.all.keys(expectedModelObjProperties))
+
+    it('should map the data properly', async () => {
+      const modelObj = await redisODM({ redisClient }).get(data.id)
+
+      modelObj.key.should.equal(data.id)
+      JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
+    })
+  })
+
   describe('When saving a model object', () => {
     beforeEach(() => {
       redisClient.hmset.once().withExactArgs(...flattenedData)

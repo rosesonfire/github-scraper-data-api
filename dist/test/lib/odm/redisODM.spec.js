@@ -30,7 +30,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       positiveReply = void 0;
 
   (0, _setup.before)(function () {
-    expectedODMProperties = ['create'];
+    expectedODMProperties = ['create', 'get'];
     expectedModelObjProperties = ['key', 'data', 'save'];
     data = {
       id: 126,
@@ -112,6 +112,28 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           e.message.should.equal('Array as value is not supported');
         }
       });
+    });
+  });
+
+  (0, _setup.describe)('When getting a model object', function () {
+    (0, _setup.beforeEach)(function () {
+      redisClient.hgetall.once().withExactArgs(data.id).resolves(flattenedData);
+      mocks = [redisClient.hgetall];
+    });
+
+    (0, _setup.it)('should return a promise', function () {
+      return (0, _redisODM2.default)({ redisClient: redisClient }).get(data.id).should.be.a('promise');
+    });
+
+    (0, _setup.it)('should have expected properties', function () {
+      return (0, _redisODM2.default)({ redisClient: redisClient }).get(data.id).should.eventually.have.all.keys(expectedModelObjProperties);
+    });
+
+    (0, _setup.it)('should map the data properly', async function () {
+      var modelObj = await (0, _redisODM2.default)({ redisClient: redisClient }).get(data.id);
+
+      modelObj.key.should.equal(data.id);
+      JSON.stringify(modelObj.data).should.equal(JSON.stringify(data));
     });
   });
 
