@@ -77,7 +77,7 @@ describe('RedisODM', () => {
           .create({ key: data.id, data })
 
         modelObj.key.should.equal(data.id)
-        JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
+        modelObj.data.should.equal(data)
       })
     })
 
