@@ -6,8 +6,16 @@ function * recurse (entry, preString) {
   const value = entry[1]
 
   if (Array.isArray(value)) {
-    throw new Error('Currently arrays are not supported')
-  } else if (typeof value === 'string' || typeof value === 'number' ||
+    throw new Error('Array as value is not supported')
+  } else if (typeof value === 'string') {
+    if (value.indexOf(':') === -1) {
+      yield `${preString}${key}`
+      yield value
+    } else {
+      // TODO: use some escaping mechanism to support this
+      throw new Error('Occurence of ":" in string value is not supported')
+    }
+  } else if (typeof value === 'number' ||
     typeof value === 'boolean' || value instanceof Date) {
     yield `${preString}${key}`
     yield value
