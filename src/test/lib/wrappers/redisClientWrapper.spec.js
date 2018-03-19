@@ -7,7 +7,7 @@ import { redisClientMock, redisClientStub }
   from './../../mocks/others/redisClient'
 import { utilsStub } from './../../mocks/others/jsUtils'
 
-describe('RedisWrapper', () => {
+describe('RedisClientWrapper', () => {
   let
     mocks,
     redis,
@@ -35,7 +35,7 @@ describe('RedisWrapper', () => {
 
   afterEach(() => mocks.forEach(mock => mock.verify()))
 
-  describe('When creating redisWrapper', () => {
+  describe('When creating redisClientWrapper', () => {
     beforeEach(() => {
       redisClient = redisClientStub()
       mocks = [ redis.createClient ]
@@ -47,7 +47,7 @@ describe('RedisWrapper', () => {
       redisClientWrapper({ redis, host, port, utils }).should.have.all
         .keys(...expectedProperties))
 
-    describe('When calling hmset in redisWrapper', () => {
+    describe('When calling hmset in redisClientWrapper', () => {
       describe('When successful', () => {
         beforeEach(() => redisClient.hmset.onFirstCall()
           .callsFake((...args) => args[args.length - 1](null, positiveReply)))
@@ -81,7 +81,7 @@ describe('RedisWrapper', () => {
     })
   })
 
-  describe('When calling hmset in redisWrapper', () => {
+  describe('When calling hmset in redisClientWrapper', () => {
     beforeEach(() => {
       redisClient = redisClientMock()
       mocks = [ redis.createClient, redisClient.hmset ]
@@ -97,7 +97,7 @@ describe('RedisWrapper', () => {
       })
   })
 
-  describe('When calling quit in redisWrapper', () => {
+  describe('When calling quit in redisClientWrapper', () => {
     beforeEach(() => {
       redisClient = redisClientMock()
       mocks = [ redis.createClient, redisClient.quit ]
