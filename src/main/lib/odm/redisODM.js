@@ -45,20 +45,43 @@ function * flattenData (data, preString = '') {
   }
 }
 
-// Maps data and persits it to a redis server
-// Data has to be a json array
+const validateData = data => [...flattenData(data)]
+
+// Generates an object from a flattened array of an the object's key and values
 // Example:
-//   [
-//     { 'name': 'abc', 'code': 56 },
-//     { 'name': 'efg', 'code': 84 }
-//   ]
-export default ({ redisClient }) => ({
-  // data is the data
-  // idKey is the key in the data which will be used as the id in the redis
-  //   hash object
-  create: ({ key, data }) => ({
+//   [ 'name', 'abc', 'code', 56, 'meta:location': 'a' ]
+//   is mapped to
+//   { 'name': 'abc', 'code': 56, 'meta': { 'location': 'a' } }
+function mapToData (flattenData) {
+  const data = {}
+  // for (let i = 0, len = flattenData.length; i < len; i += 2) {
+  //   if (flattenData[i + 1])
+  //   data[flattenData[i]] = flattenData[i + 1]
+  // }
+  return data
+}
+
+const createNewModelObject = (redisClient) => (key, data) => {
+  validateData(data)
+  return {
     key,
     data,
     save: async () => redisClient.hmset(key, ...flattenData(data))
-  })
-})
+  }
+}
+
+export default ({ redisClient }) => {
+  const _createNewModelObject = createNewModelObject(redisClient)
+
+  return {
+    // Creates a new model object
+    create: ({ key, data }) => _createNewModelObject(key, data),
+    // Fetches data from db and creates a new model object
+    get: async key => {
+      const flattenData = await redisClient.hgetall(key)
+      const data = mapToData(flattenData)
+
+      return _createNewModelObject(key, data)
+    }
+  }
+}
