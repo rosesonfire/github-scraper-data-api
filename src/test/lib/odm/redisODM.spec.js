@@ -65,15 +65,9 @@ describe('RedisODM', () => {
       it('should map the data properly', () => {
         const modelObj = redisODM({ redisClient })
           .create({ key: data.id, data: data })
-        const modelObjData = modelObj.data
 
         modelObj.key.should.equal(data.id)
-
-        Object.entries(data)
-          .forEach(entry => modelObjData.should.have.own.property(...entry))
-
-        Object.entries(modelObjData)
-          .forEach(entry => data.should.have.own.property(...entry))
+        JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
       })
     })
   })
