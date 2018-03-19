@@ -69,12 +69,12 @@ describe('RedisODM', () => {
     describe('When creating a model object', () => {
       it('should have expected properties', () =>
         redisODM({ redisClient })
-          .create({ key: data.id, data: data }).should.have.all
+          .create({ key: data.id, data }).should.have.all
           .keys(expectedModelObjProperties))
 
       it('should map the data properly', () => {
         const modelObj = redisODM({ redisClient })
-          .create({ key: data.id, data: data })
+          .create({ key: data.id, data })
 
         modelObj.key.should.equal(data.id)
         JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
@@ -115,11 +115,11 @@ describe('RedisODM', () => {
 
     it('should return a promise', () =>
       redisODM({ redisClient })
-        .create({ key: data.id, data: data }).save().should.be.a('promise'))
+        .create({ key: data.id, data }).save().should.be.a('promise'))
 
     it('should be successful', () =>
       redisODM({ redisClient })
-        .create({ key: data.id, data: data }).save().should.eventually
+        .create({ key: data.id, data }).save().should.eventually
         .equal(positiveReply))
   })
 })
