@@ -12,6 +12,8 @@ describe('RedisODM', () => {
     expectedODMProperties,
     expectedModelObjProperties,
     data,
+    dataWithColon,
+    dataWithArray,
     flattenedData,
     positiveReply
 
@@ -33,6 +35,14 @@ describe('RedisODM', () => {
         meta1: 'hello',
         meta2: true
       }
+    }
+    dataWithColon = {
+      id: 3,
+      value: 'somevalue:withcolon'
+    }
+    dataWithArray = {
+      id: 3,
+      value: ['somevalue']
     }
     flattenedData = [126, 'id', 126, 'name', 'someName', 'entry:id', 78,
       'entry:value', 45, 'entry:description:date',
@@ -70,8 +80,32 @@ describe('RedisODM', () => {
         JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
       })
     })
-  })
 
+    describe('When creating a model object with colon in a value', () => {
+      it('should fail', () => {
+        try {
+          redisODM({ redisClient })
+            .create({ key: data.id, data: dataWithColon })
+          '1'.should.equal('2')
+        } catch (e) {
+          e.message.should
+            .equal('Occurence of ":" in string value is not supported')
+        }
+  })
+    })
+
+    describe('When creating a model object with array as a value', () => {
+      it('should fail', () => {
+        try {
+          redisODM({ redisClient })
+            .create({ key: data.id, data: dataWithArray })
+          '1'.should.equal('2')
+        } catch (e) {
+          e.message.should
+            .equal('Array as value is not supported')
+        }
+      })
+    })
   describe('When saving a model object', () => {
     beforeEach(() => {
       redisClient.hmset.once().withExactArgs(...flattenedData)
