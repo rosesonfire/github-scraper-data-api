@@ -10,7 +10,7 @@ function * recurse (entry, preString) {
   } else if (typeof value === 'string' || typeof value === 'number' ||
     typeof value === 'boolean' || value instanceof Date) {
     yield `${preString}${key}`
-    yield value.toString()
+    yield value
   } else if (typeof value === 'object') {
     const newPreString = `${preString}${key}:`
 
@@ -25,7 +25,7 @@ function * recurse (entry, preString) {
 // Generates a flat array of an object's key and values
 // Example:
 //   { 'name': 'abc', 'code': 56, 'meta': { 'location': 'a' } }
-//   is generated as
+//   is flattened to
 //   [ 'name', 'abc', 'code', 56, 'meta:location': 'a' ]
 function * flattenData (data, preString = '') {
   const entries = Object.entries(data)

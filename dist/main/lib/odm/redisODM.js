@@ -42,7 +42,7 @@ function recurse(entry, preString) {
 
         case 9:
           _context.next = 11;
-          return value.toString();
+          return value;
 
         case 11:
           _context.next = 44;
@@ -128,7 +128,7 @@ function recurse(entry, preString) {
 // Generates a flat array of an object's key and values
 // Example:
 //   { 'name': 'abc', 'code': 56, 'meta': { 'location': 'a' } }
-//   is generated as
+//   is flattened to
 //   [ 'name', 'abc', 'code', 56, 'meta:location': 'a' ]
 function flattenData(data) {
   var preString = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';

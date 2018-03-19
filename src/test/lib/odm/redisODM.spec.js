@@ -34,11 +34,11 @@ describe('RedisODM', () => {
         meta2: true
       }
     }
-    flattenedData = [126, 'id', '126', 'name', 'someName', 'entry:id', '78',
-      'entry:value', '45', 'entry:description:date',
-      'Fri Mar 02 2018 05:58:35 GMT+0600 (+06)',
+    flattenedData = [126, 'id', 126, 'name', 'someName', 'entry:id', 78,
+      'entry:value', 45, 'entry:description:date',
+      new Date(Date.parse('2018-03-01T23:58:35Z')),
       'entry:description:location', 'someLocation', 'meta:meta1', 'hello',
-      'meta:meta2', 'true']
+      'meta:meta2', true]
     positiveReply = 'OK'
   })
 
