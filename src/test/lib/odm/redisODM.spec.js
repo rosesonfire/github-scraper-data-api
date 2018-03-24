@@ -1,3 +1,5 @@
+import { utils } from 'js-utils'
+
 import { describe, before, beforeEach, afterEach, it } from './../../setup'
 // unit
 import redisODM from './../../../main/lib/odm/redisODM'
@@ -64,16 +66,17 @@ describe('RedisODM', () => {
     })
 
     it('should have expected properties', () =>
-      redisODM({ redisClient }).should.have.all.keys(expectedODMProperties))
+      redisODM({ redisClient, utils }).should.have.all
+        .keys(expectedODMProperties))
 
     describe('When creating a model object', () => {
       it('should have expected properties', () =>
-        redisODM({ redisClient })
+        redisODM({ redisClient, utils })
           .create({ key: data.id, data }).should.have.all
           .keys(expectedModelObjProperties))
 
       it('should map the data properly', () => {
-        const modelObj = redisODM({ redisClient })
+        const modelObj = redisODM({ redisClient, utils })
           .create({ key: data.id, data })
 
         modelObj.key.should.equal(data.id)
@@ -84,7 +87,7 @@ describe('RedisODM', () => {
     describe('When creating a model object with colon in a value', () => {
       it('should fail', () => {
         try {
-          redisODM({ redisClient })
+          redisODM({ redisClient, utils })
             .create({ key: data.id, data: dataWithColon })
           '1'.should.equal('2')
         } catch (e) {
@@ -97,7 +100,7 @@ describe('RedisODM', () => {
     describe('When creating a model object with array as a value', () => {
       it('should fail', () => {
         try {
-          redisODM({ redisClient })
+          redisODM({ redisClient, utils })
             .create({ key: data.id, data: dataWithArray })
           '1'.should.equal('2')
         } catch (e) {
@@ -115,14 +118,14 @@ describe('RedisODM', () => {
     })
 
     it('should return a promise', () =>
-      redisODM({ redisClient }).get(data.id).should.be.a('promise'))
+      redisODM({ redisClient, utils }).get(data.id).should.be.a('promise'))
 
     it('should have expected properties', () =>
-      redisODM({ redisClient }).get(data.id)
+      redisODM({ redisClient, utils }).get(data.id)
         .should.eventually.have.all.keys(expectedModelObjProperties))
 
     it('should map the data properly', async () => {
-      const modelObj = await redisODM({ redisClient }).get(data.id)
+      const modelObj = await redisODM({ redisClient, utils }).get(data.id)
 
       modelObj.key.should.equal(data.id)
       JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
@@ -137,11 +140,11 @@ describe('RedisODM', () => {
     })
 
     it('should return a promise', () =>
-      redisODM({ redisClient })
+      redisODM({ redisClient, utils })
         .create({ key: data.id, data }).save().should.be.a('promise'))
 
     it('should be successful', () =>
-      redisODM({ redisClient })
+      redisODM({ redisClient, utils })
         .create({ key: data.id, data }).save().should.eventually
         .equal(positiveReply))
   })

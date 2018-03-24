@@ -47,17 +47,35 @@ function * flattenData (data, preString = '') {
 
 const validateData = data => [...flattenData(data)]
 
+const setPropertyValue = (obj, utils) => (propertyChain, value) => {
+  // Set the object chain
+  const tailObject =
+    utils.foldLeft(propertyChain, [null, obj], ([parent, child], prop) => {
+      child[prop] = child[prop] || {}
+
+      return [child, child[prop]]
+    })[0]
+
+  // Set the value
+  tailObject[propertyChain[propertyChain.length - 1]] = value
+}
+
 // Generates an object from a flattened array of an the object's key and values
 // Example:
 //   [ 'name', 'abc', 'code', 56, 'meta:location': 'a' ]
 //   is mapped to
 //   { 'name': 'abc', 'code': 56, 'meta': { 'location': 'a' } }
-function mapToData (flattenData) {
+function unflattenData (flattenData, utils) {
   const data = {}
-  // for (let i = 0, len = flattenData.length; i < len; i += 2) {
-  //   if (flattenData[i + 1])
-  //   data[flattenData[i]] = flattenData[i + 1]
-  // }
+  const groupedData = utils.groupArrayItems(flattenData, 2)
+  const _setPropertyValue = setPropertyValue(data, utils)
+
+  groupedData.forEach(([key, value]) => {
+    const propertyChain = key.split(':')
+
+    return _setPropertyValue(propertyChain, value)
+  })
+
   return data
 }
 
@@ -70,7 +88,7 @@ const createNewModelObject = (redisClient) => (key, data) => {
   }
 }
 
-export default ({ redisClient }) => {
+export default ({ redisClient, utils }) => {
   const _createNewModelObject = createNewModelObject(redisClient)
 
   return {
@@ -78,8 +96,9 @@ export default ({ redisClient }) => {
     create: ({ key, data }) => _createNewModelObject(key, data),
     // Fetches data from db and creates a new model object
     get: async key => {
-      const flattenData = await redisClient.hgetall(key)
-      const data = mapToData(flattenData)
+      const hgetallResponse = await redisClient.hgetall(key)
+      const flattenData = hgetallResponse.slice(1)
+      const data = unflattenData(flattenData, utils)
 
       return _createNewModelObject(key, data)
     }
