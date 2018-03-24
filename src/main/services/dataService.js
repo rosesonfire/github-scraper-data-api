@@ -2,6 +2,7 @@
 export default ({ odm }) => ({
   // TODO: promise.all will fail even if some data gets persisted
   //       so this needs to be fixed
-  writeData: async (dataList) => Promise.all(
-    dataList.map(data => odm.create({ key: data.author.uri, data }).save()))
+  writeData: dataList => Promise.all(
+    dataList.map(data => odm.create({ key: data.author.uri, data }).save())),
+  readData: odm.get
 })

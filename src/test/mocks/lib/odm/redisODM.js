@@ -5,5 +5,6 @@ export const redisModelObjectMock = () => ({
 })
 
 export default () => ({
-  create: sinon.mock()
+  create: sinon.mock(),
+  get: sinon.mock()
 })

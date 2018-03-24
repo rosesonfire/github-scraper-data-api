@@ -58,7 +58,7 @@ describe('DataService', () => {
         article: 'someArticle2'
       }
     ]
-    expectedProperties = ['writeData']
+    expectedProperties = ['writeData', 'readData']
     positiveReply = 'OK'
   })
 
@@ -130,6 +130,32 @@ describe('DataService', () => {
       it('should fail to write data', () =>
         dataService({ odm: redisODM }).writeData(multiDataList).should.be
           .rejected)
+    })
+  })
+
+  describe('When reading data', () => {
+    beforeEach(() => {
+      mocks = [redisODM.get]
+    })
+
+    describe('When successful', () => {
+      beforeEach(() => redisODM.get.once()
+        .withExactArgs(singleDataList[0].author.uri)
+        .returns(Promise.resolve(redisModelObject)))
+
+      it('should read data successfully', () =>
+        dataService({ odm: redisODM }).readData(singleDataList[0].author.uri)
+          .should.eventually.equal(redisModelObject))
+    })
+
+    describe('When fails', () => {
+      beforeEach(() => redisODM.get.once()
+        .withExactArgs(singleDataList[0].author.uri)
+        .returns(Promise.reject(new Error('err'))))
+
+      it('should fail to read data', () =>
+        dataService({ odm: redisODM }).readData(singleDataList[0].author.uri)
+          .should.be.rejected)
     })
   })
 })
