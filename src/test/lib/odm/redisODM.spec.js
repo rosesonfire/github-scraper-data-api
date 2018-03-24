@@ -14,10 +14,12 @@ describe('RedisODM', () => {
     expectedODMProperties,
     expectedModelObjProperties,
     data,
-    dataWithColon,
+    dataWithColonInAKey,
     dataWithArray,
     flattenedData,
-    positiveReply
+    positiveReply,
+    noColonInKeyErrorMsg,
+    noArrayAsValueErrorMsg
 
   before(() => {
     expectedODMProperties = ['create', 'get']
@@ -38,9 +40,9 @@ describe('RedisODM', () => {
         meta2: true
       }
     }
-    dataWithColon = {
+    dataWithColonInAKey = {
       id: 3,
-      value: 'somevalue:withcolon'
+      'value:withcolon': 'somevalue'
     }
     dataWithArray = {
       id: 3,
@@ -52,6 +54,8 @@ describe('RedisODM', () => {
       'entry:description:location', 'someLocation', 'meta:meta1', 'hello',
       'meta:meta2', true]
     positiveReply = 'OK'
+    noColonInKeyErrorMsg = 'Occurence of ":" in key is not supported'
+    noArrayAsValueErrorMsg = 'Array as value is not supported'
   })
 
   beforeEach(() => {
@@ -84,15 +88,15 @@ describe('RedisODM', () => {
       })
     })
 
-    describe('When creating a model object with colon in a value', () => {
+    describe('When creating a model object with colon in a key', () => {
       it('should fail', () => {
         try {
           redisODM({ redisClient, utils })
-            .create({ key: data.id, data: dataWithColon })
+            .create({ key: dataWithColonInAKey.id, data: dataWithColonInAKey })
           '1'.should.equal('2')
         } catch (e) {
           e.message.should
-            .equal('Occurence of ":" in string value is not supported')
+            .equal(noColonInKeyErrorMsg)
         }
       })
     })
@@ -105,7 +109,7 @@ describe('RedisODM', () => {
           '1'.should.equal('2')
         } catch (e) {
           e.message.should
-            .equal('Array as value is not supported')
+            .equal(noArrayAsValueErrorMsg)
         }
       })
     })

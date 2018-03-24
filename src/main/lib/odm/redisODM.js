@@ -5,17 +5,14 @@ function * recurse (entry, preString) {
   const key = entry[0]
   const value = entry[1]
 
+  if (key.indexOf(':') !== -1) {
+    // TODO: use some escaping mechanism to support this
+    throw new Error('Occurence of ":" in key is not supported')
+  }
+
   if (Array.isArray(value)) {
     throw new Error('Array as value is not supported')
-  } else if (typeof value === 'string') {
-    if (value.indexOf(':') === -1) {
-      yield `${preString}${key}`
-      yield value
-    } else {
-      // TODO: use some escaping mechanism to support this
-      throw new Error('Occurence of ":" in string value is not supported')
-    }
-  } else if (typeof value === 'number' ||
+  } else if (typeof value === 'string' || typeof value === 'number' ||
     typeof value === 'boolean' || value instanceof Date) {
     yield `${preString}${key}`
     yield value
