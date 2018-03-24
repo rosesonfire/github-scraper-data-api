@@ -1,3 +1,5 @@
+import { utils } from 'js-utils'
+
 import { describe, before, beforeEach, afterEach, it } from './../../setup'
 // unit
 import redisClientWrapper from './../../../main/lib/wrappers/redisClientWrapper'
@@ -5,13 +7,11 @@ import redisClientWrapper from './../../../main/lib/wrappers/redisClientWrapper'
 import redisMock from './../../mocks/others/redis'
 import { redisClientMock, redisClientStub }
   from './../../mocks/others/redisClient'
-import { utilsStub } from './../../mocks/others/jsUtils'
 
 describe('RedisClientWrapper', () => {
   let
     mocks,
     redis,
-    utils,
     redisClient,
     host,
     port,
@@ -31,8 +31,6 @@ describe('RedisClientWrapper', () => {
 
   beforeEach(() => {
     redis = redisMock()
-    utils = utilsStub()
-    utils.createDefensivePromise.callsFake(f => new Promise(f))
   })
 
   afterEach(() => mocks.forEach(mock => mock.verify()))
