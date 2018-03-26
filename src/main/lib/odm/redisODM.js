@@ -59,15 +59,14 @@ const setPropertyValue = (obj, utils) => (propertyChain, value) => {
 
 // Generates an object from a flattened array of an the object's key and values
 // Example:
-//   [ 'name', 'abc', 'code', 56, 'meta:location': 'a' ]
+//   { 'name': 'abc', 'code': 56, 'meta:location': 'a' }
 //   is mapped to
 //   { 'name': 'abc', 'code': 56, 'meta': { 'location': 'a' } }
-function unflattenData (flattenData, utils) {
+const unflattenData = utils => hgetallResponse => {
   const data = {}
-  const groupedData = utils.groupArrayItems(flattenData, 2)
   const _setPropertyValue = setPropertyValue(data, utils)
 
-  groupedData.forEach(([key, value]) => {
+  Object.entries(hgetallResponse).forEach(([key, value]) => {
     const propertyChain = key.split(':')
 
     return _setPropertyValue(propertyChain, value)
@@ -87,6 +86,7 @@ const createNewModelObject = redisClient => (key, data) => {
 
 export default ({ redisClient, utils }) => {
   const _createNewModelObject = createNewModelObject(redisClient)
+  const _unflattenData = unflattenData(utils)
 
   return {
     // Creates a new model object
@@ -99,8 +99,7 @@ export default ({ redisClient, utils }) => {
         throw new Error(
           `Could not find data matching the provided key (${key})`)
       } else {
-        const flattenData = hgetallResponse.slice(1)
-        const data = unflattenData(flattenData, utils)
+        const data = _unflattenData(hgetallResponse)
 
         return _createNewModelObject(key, data)
       }

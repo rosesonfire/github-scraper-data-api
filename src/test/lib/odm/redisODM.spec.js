@@ -17,6 +17,7 @@ describe('RedisODM', () => {
     dataWithColonInAKey,
     dataWithArray,
     flattenedData,
+    hgetallResponse,
     positiveReply,
     noColonInKeyErrorMsg,
     noArrayAsValueErrorMsg,
@@ -55,6 +56,16 @@ describe('RedisODM', () => {
       new Date(Date.parse('2018-03-01T23:58:35Z')),
       'entry:description:location', 'someLocation', 'meta:meta1', 'hello',
       'meta:meta2', true]
+    hgetallResponse = {
+      'id': 126,
+      'name': 'someName',
+      'entry:id': 78,
+      'entry:value': 45,
+      'entry:description:date': new Date(Date.parse('2018-03-01T23:58:35Z')),
+      'entry:description:location': 'someLocation',
+      'meta:meta1': 'hello',
+      'meta:meta2': true
+    }
     positiveReply = 'OK'
     noColonInKeyErrorMsg = 'Occurence of ":" in key is not supported'
     noArrayAsValueErrorMsg = 'Array as value is not supported'
@@ -128,7 +139,7 @@ describe('RedisODM', () => {
     describe('When key exists', () => {
       beforeEach(() => {
         redisClient.hgetall.once().withExactArgs(data.id)
-          .resolves(flattenedData)
+          .resolves(hgetallResponse)
       })
 
       it('should return a promise', () =>
