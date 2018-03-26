@@ -3,5 +3,5 @@ export default ({ dataService }) => ({
   writeData: (req, res) =>
     res.setBufferedResponse(dataService.writeData(req.body.data)),
   readData: (req, res) =>
-    res.setBufferedResponse(dataService.readData(req.body.data.key))
+    res.setBufferedResponse(dataService.readData(req.params.key))
 })

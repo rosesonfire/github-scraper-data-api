@@ -31,7 +31,7 @@ describe('DataController', () => {
       }
     ]
     writeReq = { body: { data } }
-    readReq = { body: { data: { key: 'someUri2' } } }
+    readReq = { params: { key: 'someUri2' } }
     expectedProperties = ['writeData', 'readData']
     positiveResponse = Promise.resolve('OK')
   })
@@ -66,7 +66,7 @@ describe('DataController', () => {
 
   describe('When reading data', () => {
     beforeEach(() => {
-      dataService.readData.once().withExactArgs(readReq.body.data.key)
+      dataService.readData.once().withExactArgs(readReq.params.key)
         .returns(data[0])
       res.setBufferedResponse.once().withExactArgs(data[0])
       mocks = [dataService.readData, res.setBufferedResponse]
