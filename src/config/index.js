@@ -1,11 +1,10 @@
 import { utils } from 'js-utils'
 
-const defaultConfigFile = './dev.config'
 const configFileOptions = {
-  'production': './prod.config',
-  'development': defaultConfigFile
+  production: './prod.config',
+  development: './dev.config'
 }
-const configFile =
-  utils.iocHelper.getConfigFile(configFileOptions, defaultConfigFile)
+const configFile = utils.iocHelper.getConfigFile(
+  configFileOptions, configFileOptions.development)
 
 export default require(configFile).default
