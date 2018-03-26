@@ -21,7 +21,7 @@ describe('RedisODM', () => {
     noColonInKeyErrorMsg,
     noArrayAsValueErrorMsg,
     keyNotFoundErrorMsg,
-    noArrayAsValueErrorMsg
+    redisClientFailErrorMsg
 
   before(() => {
     expectedODMProperties = ['create', 'get']
@@ -60,6 +60,7 @@ describe('RedisODM', () => {
     noArrayAsValueErrorMsg = 'Array as value is not supported'
     keyNotFoundErrorMsg =
       `Could not find data matching the provided key (${data.id})`
+    redisClientFailErrorMsg = 'err'
   })
 
   beforeEach(() => {
@@ -154,6 +155,17 @@ describe('RedisODM', () => {
       it('should fail', () => redisODM({ redisClient, utils }).get(data.id)
         .then(response => '1'.should.equal('2'))
         .catch(err => err.message.should.equal(keyNotFoundErrorMsg)))
+    })
+
+    describe('When underlying redisClient fails', () => {
+      beforeEach(() => {
+        redisClient.hgetall.once().withExactArgs(data.id)
+          .rejects(new Error(redisClientFailErrorMsg))
+      })
+
+      it('should fail', () => redisODM({ redisClient, utils }).get(data.id)
+        .then(response => '1'.should.equal('2'))
+        .catch(err => err.message.should.equal(redisClientFailErrorMsg)))
     })
   })
 
