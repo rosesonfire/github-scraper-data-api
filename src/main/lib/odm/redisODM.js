@@ -94,10 +94,16 @@ export default ({ redisClient, utils }) => {
     // Fetches data from db and creates a new model object
     get: async key => {
       const hgetallResponse = await redisClient.hgetall(key)
-      const flattenData = hgetallResponse.slice(1)
-      const data = unflattenData(flattenData, utils)
 
-      return _createNewModelObject(key, data)
+      if (hgetallResponse === null) {
+        throw new Error(
+          `Could not find data matching the provided key (${key})`)
+      } else {
+        const flattenData = hgetallResponse.slice(1)
+        const data = unflattenData(flattenData, utils)
+
+        return _createNewModelObject(key, data)
+      }
     }
   }
 }

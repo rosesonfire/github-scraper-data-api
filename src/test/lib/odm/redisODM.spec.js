@@ -19,6 +19,8 @@ describe('RedisODM', () => {
     flattenedData,
     positiveReply,
     noColonInKeyErrorMsg,
+    noArrayAsValueErrorMsg,
+    keyNotFoundErrorMsg,
     noArrayAsValueErrorMsg
 
   before(() => {
@@ -56,6 +58,8 @@ describe('RedisODM', () => {
     positiveReply = 'OK'
     noColonInKeyErrorMsg = 'Occurence of ":" in key is not supported'
     noArrayAsValueErrorMsg = 'Array as value is not supported'
+    keyNotFoundErrorMsg =
+      `Could not find data matching the provided key (${data.id})`
   })
 
   beforeEach(() => {
@@ -117,22 +121,39 @@ describe('RedisODM', () => {
 
   describe('When getting a model object', () => {
     beforeEach(() => {
-      redisClient.hgetall.once().withExactArgs(data.id).resolves(flattenedData)
       mocks = [ redisClient.hgetall ]
     })
 
-    it('should return a promise', () =>
-      redisODM({ redisClient, utils }).get(data.id).should.be.a('promise'))
+    describe('When key exists', () => {
+      beforeEach(() => {
+        redisClient.hgetall.once().withExactArgs(data.id)
+          .resolves(flattenedData)
+      })
 
-    it('should have expected properties', () =>
-      redisODM({ redisClient, utils }).get(data.id)
-        .should.eventually.have.all.keys(expectedModelObjProperties))
+      it('should return a promise', () =>
+        redisODM({ redisClient, utils }).get(data.id).should.be.a('promise'))
 
-    it('should map the data properly', async () => {
-      const modelObj = await redisODM({ redisClient, utils }).get(data.id)
+      it('should have expected properties', () =>
+        redisODM({ redisClient, utils }).get(data.id)
+          .should.eventually.have.all.keys(expectedModelObjProperties))
 
-      modelObj.key.should.equal(data.id)
-      JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
+      it('should map the data properly', async () => {
+        const modelObj = await redisODM({ redisClient, utils }).get(data.id)
+
+        modelObj.key.should.equal(data.id)
+        JSON.stringify(modelObj.data).should.equal(JSON.stringify(data))
+      })
+    })
+
+    describe('When key does not exist', () => {
+      beforeEach(() => {
+        redisClient.hgetall.once().withExactArgs(data.id)
+          .resolves(null)
+      })
+
+      it('should fail', () => redisODM({ redisClient, utils }).get(data.id)
+        .then(response => '1'.should.equal('2'))
+        .catch(err => err.message.should.equal(keyNotFoundErrorMsg)))
     })
   })
 
