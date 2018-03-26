@@ -76,7 +76,7 @@ function unflattenData (flattenData, utils) {
   return data
 }
 
-const createNewModelObject = (redisClient) => (key, data) => {
+const createNewModelObject = redisClient => (key, data) => {
   validateData(data)
   return {
     key,
