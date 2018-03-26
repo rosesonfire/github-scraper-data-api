@@ -145,7 +145,7 @@ describe('DataService', () => {
 
       it('should read data successfully', () =>
         dataService({ odm: redisODM }).readData(singleDataList[0].author.uri)
-          .should.eventually.equal(redisModelObject))
+          .should.eventually.equal(redisModelObject.data))
     })
 
     describe('When fails', () => {

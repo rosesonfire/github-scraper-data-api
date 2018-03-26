@@ -4,5 +4,5 @@ export default ({ odm }) => ({
   //       so this needs to be fixed
   writeData: dataList => Promise.all(
     dataList.map(data => odm.create({ key: data.author.uri, data }).save())),
-  readData: odm.get
+  readData: key => odm.get(key).then(objectModel => objectModel.data)
 })
