@@ -1,6 +1,8 @@
 export default ({ dataController }) => ({
-  get: {},
+  get: {
+    '^/scrapedData/:key$': dataController.readData
+  },
   post: {
-    '/scrapedData': dataController.writeData
+    '^/scrapedData$': dataController.writeData
   }
 })
