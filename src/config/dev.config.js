@@ -1,4 +1,5 @@
 export default {
+  debug: true,
   scraperDataAPI: {
     port: 8080,
     requestBuffer: {

@@ -6,6 +6,7 @@ exports = module.exports = createNewInstance({
   instanceConstructor: requestBuffer,
   configuration: {
     requestBufferLimit: config.scraperDataAPI.requestBuffer.bufferLimit,
-    ttl: config.scraperDataAPI.requestBuffer.ttl
+    ttl: config.scraperDataAPI.requestBuffer.ttl,
+    debug: config.debug
   }
 })

@@ -113,7 +113,8 @@ const handleRequestForNewTask = (res, next, responseBuffer) => {
   }
 }
 
-const handleRequestForBufferedTask = (requestToken, res, responseBuffer) => {
+const handleRequestForBufferedTask = debug =>
+  (requestToken, res, responseBuffer) => {
   const searchResult = responseBuffer.search(requestToken)
 
   if (searchResult) {
@@ -126,7 +127,15 @@ const handleRequestForBufferedTask = (requestToken, res, responseBuffer) => {
         // TODO: test for cases where response is not an object
         res.status(200).json(bufferedResponse.response)
       } else {
-        res.status(500).json(bufferedResponse.error)
+          res.status(500)
+          if (debug) {
+            res.json({
+              message: bufferedResponse.error.message,
+              stack: bufferedResponse.error.stack
+            })
+          } else {
+            res.json({ message: 'Error' })
+          }
       }
     } else {
       res.sendStatus(202)
@@ -142,7 +151,7 @@ const handleRequestForBufferedTask = (requestToken, res, responseBuffer) => {
  * @param {Number} ttl the maximum time (in milliseconds) to live for each async
  *               task
  */
-export default ({ requestBufferLimit, ttl }) => {
+export default ({ requestBufferLimit, ttl, debug }) => {
   const responseBuffer = createResponseBuffer(requestBufferLimit, ttl)
 
   return (req, res, next) => {
@@ -151,7 +160,7 @@ export default ({ requestBufferLimit, ttl }) => {
     } else {
       const requestToken = req.body.requestToken
 
-      handleRequestForBufferedTask(requestToken, res, responseBuffer)
+      handleRequestForBufferedTask(debug)(requestToken, res, responseBuffer)
     }
   }
 }
