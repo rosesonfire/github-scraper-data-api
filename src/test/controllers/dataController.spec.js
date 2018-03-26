@@ -9,27 +9,36 @@ describe('DataController', () => {
   let
     mocks,
     dataService,
-    req,
+    data,
+    writeReq,
+    readReq,
     res,
     expectedProperties,
     positiveResponse
 
   before(() => {
-    req = {
-      body: {
-        data: '{ "jsonData": "some data"}'
+    data = [
+      {
+        'author': {
+          'uri': 'someUri',
+          'name': 'someName',
+          'location': {
+            'city': 'someCIty',
+            'zip': 1234
+          }
+        },
+        'article': 'some article'
       }
-    }
-    expectedProperties = ['writeData']
+    ]
+    writeReq = { body: { data } }
+    readReq = { body: { data: { key: 'someUri2' } } }
+    expectedProperties = ['writeData', 'readData']
     positiveResponse = Promise.resolve('OK')
   })
 
   beforeEach(() => {
     res = resMock()
     dataService = dataServiceMock()
-    dataService.writeData.once().withExactArgs(req.body.data)
-      .returns(positiveResponse)
-    res.setBufferedResponse.once().withExactArgs(positiveResponse)
   })
 
   afterEach(() => mocks.forEach(mock => mock.verify()))
@@ -38,15 +47,32 @@ describe('DataController', () => {
     beforeEach(() => {
       mocks = []
     })
+
     it('should have the expected properties', () =>
       dataController({ dataService }).should.have.all.keys(expectedProperties))
   })
 
   describe('When writing data', () => {
     beforeEach(() => {
+      dataService.writeData.once().withExactArgs(writeReq.body.data)
+        .returns(positiveResponse)
+      res.setBufferedResponse.once().withExactArgs(positiveResponse)
       mocks = [dataService.writeData, res.setBufferedResponse]
     })
+
     it('should write data successfully', () =>
-      dataController({ dataService }).writeData(req, res))
+      dataController({ dataService }).writeData(writeReq, res))
+  })
+
+  describe('When reading data', () => {
+    beforeEach(() => {
+      dataService.readData.once().withExactArgs(readReq.body.data.key)
+        .returns(data[0])
+      res.setBufferedResponse.once().withExactArgs(data[0])
+      mocks = [dataService.readData, res.setBufferedResponse]
+    })
+
+    it('should read data successfully', () =>
+      dataController({ dataService }).readData(readReq, res))
   })
 })
