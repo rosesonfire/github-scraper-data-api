@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.dependencies = undefined;
+exports.createInstance = undefined;
 
 var _electrolyte = require('electrolyte');
 
@@ -13,7 +13,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _electrolyte2.default.use(_electrolyte2.default.dir('dist/ioc'));
 
-var dependencies = exports.dependencies = {
-  app: _electrolyte2.default.create('lib/wrappers/expressWrapper')
+var dependencies = {
+  app: 'lib/wrappers/expressWrapper'
 };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9pb2MvaW5kZXguanMiXSwibmFtZXMiOlsidXNlIiwiZGlyIiwiZGVwZW5kZW5jaWVzIiwiYXBwIiwiY3JlYXRlIl0sIm1hcHBpbmdzIjoiOzs7Ozs7O0FBQUE7Ozs7OztBQUVBLHNCQUFJQSxHQUFKLENBQVEsc0JBQUlDLEdBQUosQ0FBUSxVQUFSLENBQVI7O0FBRU8sSUFBTUMsc0NBQWU7QUFDMUJDLE9BQUssc0JBQUlDLE1BQUosQ0FBVyw2QkFBWDtBQURxQixDQUFyQiIsImZpbGUiOiJpbmRleC5qcyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBJb0MgZnJvbSAnZWxlY3Ryb2x5dGUnXG5cbklvQy51c2UoSW9DLmRpcignZGlzdC9pb2MnKSlcblxuZXhwb3J0IGNvbnN0IGRlcGVuZGVuY2llcyA9IHtcbiAgYXBwOiBJb0MuY3JlYXRlKCdsaWIvd3JhcHBlcnMvZXhwcmVzc1dyYXBwZXInKVxufVxuIl19
+
+var createInstance = exports.createInstance = function createInstance(name) {
+  return _electrolyte2.default.create(dependencies[name]);
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9pb2MvaW5kZXguanMiXSwibmFtZXMiOlsidXNlIiwiZGlyIiwiZGVwZW5kZW5jaWVzIiwiYXBwIiwiY3JlYXRlSW5zdGFuY2UiLCJjcmVhdGUiLCJuYW1lIl0sIm1hcHBpbmdzIjoiOzs7Ozs7O0FBQUE7Ozs7OztBQUVBLHNCQUFJQSxHQUFKLENBQVEsc0JBQUlDLEdBQUosQ0FBUSxVQUFSLENBQVI7O0FBRUEsSUFBTUMsZUFBZTtBQUNuQkMsT0FBSztBQURjLENBQXJCOztBQUlPLElBQU1DLDBDQUFpQixTQUFqQkEsY0FBaUI7QUFBQSxTQUFRLHNCQUFJQyxNQUFKLENBQVdILGFBQWFJLElBQWIsQ0FBWCxDQUFSO0FBQUEsQ0FBdkIiLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgSW9DIGZyb20gJ2VsZWN0cm9seXRlJ1xuXG5Jb0MudXNlKElvQy5kaXIoJ2Rpc3QvaW9jJykpXG5cbmNvbnN0IGRlcGVuZGVuY2llcyA9IHtcbiAgYXBwOiAnbGliL3dyYXBwZXJzL2V4cHJlc3NXcmFwcGVyJ1xufVxuXG5leHBvcnQgY29uc3QgY3JlYXRlSW5zdGFuY2UgPSBuYW1lID0+IElvQy5jcmVhdGUoZGVwZW5kZW5jaWVzW25hbWVdKVxuIl19

@@ -2,6 +2,8 @@ import IoC from 'electrolyte'
 
 IoC.use(IoC.dir('dist/ioc'))
 
-export const dependencies = {
-  app: IoC.create('lib/wrappers/expressWrapper')
+const dependencies = {
+  app: 'lib/wrappers/expressWrapper'
 }
+
+export const createInstance = name => IoC.create(dependencies[name])
