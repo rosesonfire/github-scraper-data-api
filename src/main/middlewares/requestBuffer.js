@@ -27,9 +27,9 @@ const createResponseBuffer = (requestBufferLimit, ttl) => {
 
   // Gets the id of an available slot in the buffer
   responseBuffer.getNewID = () => {
-    responseBuffer.clean()
-
     const buffer = responseBuffer._buffer
+
+    responseBuffer.clean()
 
     return requestIDs.find(id => !(id in buffer))
   }

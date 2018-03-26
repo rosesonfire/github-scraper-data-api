@@ -36,9 +36,9 @@ var createResponseBuffer = function createResponseBuffer(requestBufferLimit, ttl
 
   // Gets the id of an available slot in the buffer
   responseBuffer.getNewID = function () {
-    responseBuffer.clean();
-
     var buffer = responseBuffer._buffer;
+
+    responseBuffer.clean();
 
     return requestIDs.find(function (id) {
       return !(id in buffer);
