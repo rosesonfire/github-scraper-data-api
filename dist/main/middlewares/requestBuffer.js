@@ -78,7 +78,7 @@ var createResponseBuffer = function createResponseBuffer(requestBufferLimit, ttl
 var createBufferedResponse = function createBufferedResponse() {
   var bufferedResponse = {
     // TODO: this is not secure, make it more cryptic
-    requestToken: Date.now().toString(),
+    requestToken: Date.now(),
     completed: false,
     succeeded: false,
     response: null,
@@ -128,20 +128,20 @@ var handleRequestForNewTask = function handleRequestForNewTask(res, next, respon
 
 var handleRequestForBufferedTask = function handleRequestForBufferedTask(debug) {
   return function (requestToken, res, responseBuffer) {
-  var searchResult = responseBuffer.search(requestToken);
+    var searchResult = responseBuffer.search(requestToken);
 
-  if (searchResult) {
-    var requestID = searchResult.requestID,
-        bufferedResponse = searchResult.bufferedResponse;
+    if (searchResult) {
+      var requestID = searchResult.requestID,
+          bufferedResponse = searchResult.bufferedResponse;
 
 
-    if (bufferedResponse.completed) {
-      responseBuffer.remove(requestID);
+      if (bufferedResponse.completed) {
+        responseBuffer.remove(requestID);
 
-      if (bufferedResponse.succeeded) {
-        // TODO: test for cases where response is not an object
-        res.status(200).json(bufferedResponse.response);
-      } else {
+        if (bufferedResponse.succeeded) {
+          // TODO: test for cases where response is not an object
+          res.status(200).json(bufferedResponse.response);
+        } else {
           res.status(500);
           if (debug) {
             res.json({
@@ -150,15 +150,15 @@ var handleRequestForBufferedTask = function handleRequestForBufferedTask(debug) 
             });
           } else {
             res.json({ message: 'Error' });
-      }
+          }
         }
+      } else {
+        res.sendStatus(202);
+      }
     } else {
-      res.sendStatus(202);
+      res.sendStatus(404);
     }
-  } else {
-    res.sendStatus(404);
-  }
-};
+  };
 };
 
 /**

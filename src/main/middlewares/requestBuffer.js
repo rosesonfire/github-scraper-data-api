@@ -62,7 +62,7 @@ const createResponseBuffer = (requestBufferLimit, ttl) => {
 const createBufferedResponse = () => {
   const bufferedResponse = {
     // TODO: this is not secure, make it more cryptic
-    requestToken: Date.now().toString(),
+    requestToken: Date.now(),
     completed: false,
     succeeded: false,
     response: null,
@@ -115,18 +115,18 @@ const handleRequestForNewTask = (res, next, responseBuffer) => {
 
 const handleRequestForBufferedTask = debug =>
   (requestToken, res, responseBuffer) => {
-  const searchResult = responseBuffer.search(requestToken)
+    const searchResult = responseBuffer.search(requestToken)
 
-  if (searchResult) {
-    const { requestID, bufferedResponse } = searchResult
+    if (searchResult) {
+      const { requestID, bufferedResponse } = searchResult
 
-    if (bufferedResponse.completed) {
-      responseBuffer.remove(requestID)
+      if (bufferedResponse.completed) {
+        responseBuffer.remove(requestID)
 
-      if (bufferedResponse.succeeded) {
-        // TODO: test for cases where response is not an object
-        res.status(200).json(bufferedResponse.response)
-      } else {
+        if (bufferedResponse.succeeded) {
+          // TODO: test for cases where response is not an object
+          res.status(200).json(bufferedResponse.response)
+        } else {
           res.status(500)
           if (debug) {
             res.json({
@@ -136,14 +136,14 @@ const handleRequestForBufferedTask = debug =>
           } else {
             res.json({ message: 'Error' })
           }
+        }
+      } else {
+        res.sendStatus(202)
       }
     } else {
-      res.sendStatus(202)
+      res.sendStatus(404)
     }
-  } else {
-    res.sendStatus(404)
   }
-}
 
 /**
  * The RequestBuffer middleware
