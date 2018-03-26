@@ -1,11 +1,11 @@
-const devFile = 'dev.config'
-const prodFile = 'prod.config'
-const configOptions = {
-  'production': prodFile,
-  'development': devFile
-}
-const env = process.env.NODE_ENV
-const confFile = configOptions[env] || devFile
-const config = require(`./${confFile}`).default
+import { utils } from 'js-utils'
 
-exports = module.exports = config
+const defaultConfigFile = './dev.config'
+const configFileOptions = {
+  'production': './prod.config',
+  'development': defaultConfigFile
+}
+const configFile =
+  utils.iocHelper.getConfigFile(configFileOptions, defaultConfigFile)
+
+export default require(configFile).default
