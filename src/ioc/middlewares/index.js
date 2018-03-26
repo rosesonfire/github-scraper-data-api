@@ -1,9 +1,9 @@
 import bodyParser from 'body-parser'
+import { utils } from 'js-utils'
 
-import { createNewInstance } from './../iocHelper'
 import middlewares from './../../main/middlewares'
 
-exports = module.exports = createNewInstance({
+exports = module.exports = utils.iocHelper.createNewInstance({
   instanceConstructor: middlewares,
   dependencyInstances: {
     json: bodyParser.json(),

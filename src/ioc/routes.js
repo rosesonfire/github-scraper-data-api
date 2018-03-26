@@ -1,7 +1,8 @@
-import { createNewInstance } from './iocHelper'
+import { utils } from 'js-utils'
+
 import routes from './../main/routes'
 
-exports = module.exports = createNewInstance({
+exports = module.exports = utils.iocHelper.createNewInstance({
   instanceConstructor: routes,
   dependencyConfig: {
     dataController: 'controllers/dataController'
